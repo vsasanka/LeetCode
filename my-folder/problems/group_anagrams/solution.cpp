@@ -10,21 +10,23 @@ public:
         // and push to answer. Take a bool array, mark true for all those which have been evaluted
         // already
         
-        vector<string> copy;
+        vector<pair<string,int>> copy;
         vector<string> group;
         vector<vector<string>> ans;
         
         for (int i=0;i<strs.size();i++){
-            copy.push_back(strs[i]);
+            copy.push_back(pair<string,int>(strs[i],i));
         }
         
         vector<bool> flags(strs.size(), false);
         
         for (int i=0;i<strs.size();i++){
-            sort(copy[i].begin(),copy[i].end());
+            sort((copy[i].first).begin(),(copy[i].first).end());
         }
         
+        sort(copy.begin(),copy.end());
         
+        /*
         
         for (int i=0;i<copy.size();i++){
             if (flags[i]){
@@ -42,6 +44,19 @@ public:
             }
             ans.push_back(group);
             group.clear();
+        }
+        */
+        
+        for (int i=0;i<strs.size();i++){
+            if ((i+1) < strs.size() && (copy[i].first).compare(copy[i+1].first)==0){
+                group.push_back(strs[copy[i].second]);
+            }
+            else{
+                group.push_back(strs[copy[i].second]);
+                ans.push_back(group);
+                group.clear();
+            }
+            
         }
         
         return ans;
