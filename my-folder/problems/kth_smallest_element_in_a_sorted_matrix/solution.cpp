@@ -1,44 +1,85 @@
+
 class Solution {
     
-private:
-    int count(vector<vector<int>>&matrix, int mid){
-        int n = matrix.size();
-        int count = 0;
-        int row = 0;
-        int col = n-1;
-        
-        while(row<n && col>=0){
-            if (matrix[row][col]<=mid){
-                count += col+1;
-                row++;
-            }
-            else{
-                col--;
-            }
-        }
-        
-        return count;
-    }
-    
 public:
+    struct compare{
+        bool operator()(const pair<int, pair<int,int>> &p1, const pair<int ,pair<int,int>> &p2){
+            return p1.first>p2.first;
+        }
+    };
+    
     int kthSmallest(vector<vector<int>>& matrix, int k) {
-        
         int n = matrix.size();
-        int matrix_min = matrix[0][0];
-        int matrix_max = matrix[n-1][n-1];
-        int mid;
         
-        while (matrix_min < matrix_max){
-            mid = matrix_min + (matrix_max - matrix_min)/2;
+        // create prority queue
+        priority_queue< pair <int , pair<int,int> >, vector< pair<int , pair<int,int>> > , compare> pq;
+        
+        // insert the first col into queue
+        for (int i=0;i<n && i<k;i++){
+            pq.push(make_pair(matrix[i][0],make_pair(i,0)));
+        }
+                    
+        int numIter = 0, result;
+                    
+        // keep plucking the first element of the queue, along with it, keep adding next element
+        // in this process, once the number of such iterations equals k, break and return the result
+        while (!pq.empty()){
+            auto pqElement = pq.top();
+            pq.pop();
             
-            if (count(matrix, mid)<k){
-                matrix_min = mid+1;
+            result = pqElement.first;
+            
+            if (++numIter==k){
+                break;
             }
-            else{
-                matrix_max = mid;
+            
+            int nextElementCol = pqElement.second.second + 1;
+            
+            if (n>nextElementCol) {
+                pq.push(make_pair(matrix[pqElement.second.first][nextElementCol],make_pair(pqElement.second.first,nextElementCol)));
             }
         }
-        
-        return matrix_max;
+        return result;
     }
 };
+
+/*
+class Solution {
+ public:
+  struct numCompare {
+    bool operator()(const pair<int, pair<int, int>> &x, const pair<int, pair<int, int>> &y) {
+      return x.first > y.first;
+    }
+  };
+
+  int kthSmallest(vector<vector<int>> &matrix, int k) {
+    int n = matrix.size();
+    priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>, numCompare> minHeap;
+
+    // put the 1st element of each row in the min heap
+    // we don't need to push more than 'k' elements in the heap
+    for (int i = 0; i < n && i < k; i++) {
+      minHeap.push(make_pair(matrix[i][0], make_pair(i, 0)));
+    }
+
+    // take the smallest element form the min heap, if the running count is equal to k return the number
+    // if the row of the top element has more elements, add the next element to the heap
+    int numberCount = 0, result = 0;
+    while (!minHeap.empty()) {
+      auto heapTop = minHeap.top();
+      minHeap.pop();
+      result = heapTop.first;
+      if (++numberCount == k) {
+        break;
+      }
+
+      heapTop.second.second++;
+      if (n > heapTop.second.second) {
+        heapTop.first = matrix[heapTop.second.first][heapTop.second.second];
+        minHeap.push(heapTop);
+      }
+    }
+    return result;
+  }
+};
+*/
