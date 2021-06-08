@@ -1,53 +1,47 @@
-/*class Solution {
-public:
-    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
-        
-    }
-};*/
-
 class Solution {
-public:
-    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
-        graph g = buildGraph(numCourses, prerequisites);
-        
-        vector<bool> todo(numCourses,false);
-        vector<bool> done(numCourses,false);
-        
-        for (int i=0;i<numCourses;i++){
-            if (!acyclic(g,todo,done,i)) return false;
-        }
-        
-        return true;
-    }
+    
 private:
-    typedef vector<vector<int>> graph;
-    
-    graph buildGraph(int numCourses, vector<vector<int>>& prerequisites) {
-        graph g(numCourses);
-        
-        for (auto k : prerequisites){
-            g[k[1]].push_back(k[0]);
-        }
-        
-        return g;
-    }
-    
-    bool acyclic(graph& g, vector<bool>&todo, vector<bool>&done, int node) {
+    bool isCyclic(vector<vector<int>> &graph, vector<bool> &done, vector<bool> &todo, int node){
+        // if this node was already seen within this dfs, then return false
         if (todo[node]){
-            return false;
-        }
-        
-        if (done[node]){
             return true;
         }
+        // mark the current node as visited
+        if (done[node]){
+            return false;
+        }
+        // 
+        todo[node] = done[node] = true;
         
-        done[node] = todo[node] = true;
+        for (auto n : graph[node]){
+            if (isCyclic(graph, done,todo, n)) return true;
+        }
+        todo[node] = false;
         
-        for (auto v : g[node]){
-            if (!acyclic(g,todo,done,v)) return false;
+        return false;
+    }
+    
+    void createGraph(vector<vector<int>> &graph, vector<vector<int>> &prerequisites){
+        // iterate across prerequisites and create graph
+        
+        for (int i=0;i<prerequisites.size();i++){
+            graph[prerequisites[i][1]].push_back(prerequisites[i][0]);
+        }
+    }
+    
+public:
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<vector<int>> graph(numCourses);
+        
+        createGraph(graph, prerequisites);
+        
+        vector<bool> done(numCourses, false); // once and for all
+        vector<bool> todo(numCourses, false); // used for each dfs
+        
+        for (int i=0;i<numCourses;i++){
+            if (isCyclic(graph,done,todo,i)) return false;
         }
         
-        todo[node] = false;
         return true;
     }
 };
