@@ -1,30 +1,30 @@
 class Solution {
 public:
     void moveZeroes(vector<int>& nums) {
-        int p1,p2;
+        int i,j;
+        i = j = 0;
+        int n = nums.size();
+        int temp;
         
-        p1 = 0;
-        p2 = 0;
-        
-        int len = nums.size();
-        
-        while (p2<len){
-            if (nums[p1]!=0){
-                p1++;
-                p2++;
+        while (i < n && j < n){
+            if (nums[j] == 0){
+                j++;
+                continue;
+            }
+            else if (nums[i] != 0){
+                i++;
+                continue;
+            }
+            
+            if ( i < j ){
+                temp = nums[i];
+                nums[i] = nums[j];
+                nums[j] = temp;
+                i++;
+                j++;
             }
             else{
-                while(p2<len){
-                    if (nums[p2]!=0){
-                        int temp = nums[p1];
-                        nums[p1] = nums[p2];
-                        nums[p2] = temp;
-                        p1++;
-                        p2++;
-                        break;
-                    }
-                    p2++;
-                }
+                j = i + 1;
             }
         }
     }
