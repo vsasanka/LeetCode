@@ -9,31 +9,58 @@
  * };
  */
 class Solution {
+public:
     
-private:
-    bool isArrayPalindrome(vector<int>& array){
-        int len = array.size();
+    
+    bool isPalindrome(ListNode* head) {
         
-        for (int i=0;i<len/2;i++){
-            if (array[i]!=array[len-1-i]){
+        // fast, slow pointers
+        ListNode* slow;
+        ListNode* fast;
+        
+        slow = fast = head;
+        // fast reaches end, slow stands at center
+        
+        while (fast != NULL && fast->next != NULL){
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        
+        
+        // use slow as head and reverse list
+        
+        ListNode* prev;
+        ListNode* follow;
+        
+        prev = NULL;
+        follow = slow->next;
+        
+        while (true){
+            if (follow==NULL){
+                slow->next = prev;
+                break;
+            }
+            slow->next = prev;
+            prev = slow;
+            slow = follow;
+            follow = follow->next;
+        }
+        
+        // use new slow as head and compare for palindromes
+        
+        while (head != NULL){
+            // cout << head->val << " " << slow->val << endl;
+            if (head->val != slow->val){
                 return false;
             }
+            if (head==slow || head->next==slow){
+                break;
+            }
+            head = head->next;
+            slow = slow->next;
         }
         
         return true;
-    }
-    
-public:
-    bool isPalindrome(ListNode* head) {
         
-        ListNode* curr=head;
-        vector<int> array;
-        
-        while(curr!=NULL){
-            array.push_back(curr->val);
-            curr = curr->next;
-        }
-        
-        return isArrayPalindrome(array);
     }
 };
