@@ -2,37 +2,20 @@ class Solution {
 public:
     int longestConsecutive(vector<int>& nums) {
         
-        unordered_map<int,bool> numsMap;
-        int longestseq = 0;
-        int seq = 0;
-        int present;
+        set<int> record(nums.begin(), nums.end());
+        int res = 0;
         
-        for (int i=0; i<nums.size(); i++){
-            numsMap[nums[i]] = true;
+        for (auto n: nums){
+            if (record.find(n)==record.end()) continue;
+            
+            int prev=n-1, next=n+1;
+            
+            while (record.find(prev)!=record.end()) record.erase(prev--);
+            while (record.find(next)!=record.end()) record.erase(next++);
+            
+            res = max(res, next - prev - 1);
         }
         
-        // iterate across all nums
-        for (int i = 0; i<nums.size(); i++){
-            
-            if (numsMap[nums[i]-1] == true){
-                continue;
-            }
-            
-            // check if currrent num's preceding number is present
-            // if yes, continue without any operation
-            // if no
-                // loop for finding the size of sequence the current number can begin to form
-            
-            seq = 1;
-            present = nums[i] + 1;
-            while(numsMap[present] == true){
-                seq++;
-                present++;
-            }
-            
-            longestseq = max(seq, longestseq);
-        }
-        
-        return longestseq;
+        return res;
     }
 };
