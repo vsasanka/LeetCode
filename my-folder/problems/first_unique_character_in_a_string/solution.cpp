@@ -1,22 +1,14 @@
 class Solution {
-    
 public:
     int firstUniqChar(string s) {
-        map<char,int> mapping;
-        map<char,int>::iterator itr;
-        for (int i=0;i<s.size();i++){
-            itr = mapping.find(s[i]);
-            if (itr->first==s[i]){
-                itr->second += 1;
-            }
-            else{
-                mapping.insert(pair<char,int> (s[i],1));
-            }
+        vector<int> ans(26, 0);
+        
+        for (int i=0; i<s.size(); i++){
+            ans[s[i]-'a']++;
         }
         
-        for (int i=0;i<s.size();i++){
-            itr = mapping.find(s[i]);
-            if (itr->second==1){
+        for (int i=0; i<s.size(); i++){
+            if (ans[s[i]-'a']==1){
                 return i;
             }
         }
