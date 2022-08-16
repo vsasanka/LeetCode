@@ -1,14 +1,14 @@
 class Solution {
 public:
     int firstUniqChar(string s) {
-        vector<int> ans(26, 0);
+        vector<int> freq(26,0);
         
         for (int i=0; i<s.size(); i++){
-            ans[s[i]-'a']++;
+            freq[s[i]-'a']++;
         }
         
         for (int i=0; i<s.size(); i++){
-            if (ans[s[i]-'a']==1){
+            if (freq[s[i]-'a'] == 1){
                 return i;
             }
         }
