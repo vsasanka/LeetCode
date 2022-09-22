@@ -1,60 +1,42 @@
 class Solution {
 public:
     vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> ans;
+        set<vector<int>> ansset;
+        int j,k, target;
         
-        set<vector<int>> ans;
-        unordered_set<int> set;
-        vector<vector<int>> ans1;
+        sort(nums.begin(), nums.end());
         
-        if (nums.size()<3){
-            return ans1;
-        }
-        
-        sort(nums.begin(),nums.end());
-        
-        for (int i=0;i<nums.size()-2;i++){
-            // cout << nums[i] << endl;
-            if (set.find(nums[i])!=set.end()){
-                continue;
-            }
-            else{
-                set.insert(nums[i]);
-            }
-            int k,j;
-            j = i+1;
-            k=nums.size()-1;
+        for (int i=0; i<nums.size()-2; i++){
             
-            while(j<k){
-                if (nums[j]+nums[k]==(-1)*nums[i]){
-                    // cout << nums[j] << " " << nums[k] << endl;
-                    vector<int> v;
-                    v.push_back(nums[i]);
-                    v.push_back(nums[j]);
-                    v.push_back(nums[k]);
-                    // v.sort(v.begin(),v.end());
-                    ans.insert(v);
-                    j++;
-                    k--;
+            j = i+1, k = nums.size() - 1;
+            target = -1*(nums[i]);
+            while (j < k){
+//                 while (j+1 < k && nums[j] == nums[j+1]){
+//                     j++;
+//                 }
+                
+//                 while (k-1 > j && nums[k] == nums[k-1]){
+//                     k--;
+//                 }
+                
+                if (nums[j] + nums[k] == target){
+                    ansset.insert({nums[i], nums[j], nums[k]});
+                    j++, k--;
                 }
-                else if(nums[j]+nums[k] < (-1)*nums[i]){
-                    // cout << nums[j] << " " << nums[k] << endl;
+                else if (nums[j] + nums[k] < target){
                     j++;
                 }
                 else{
-                    // cout << nums[j] << " " << nums[k] << endl;
                     k--;
                 }
             }
         }
         
-        
-        
-        for (auto x: ans){
-            ans1.push_back(x);
+        for (auto v: ansset){
+            ans.push_back(v);
         }
         
-        return ans1;
+        return ans;
     }
 };
-//        k    i j
-// -4 -1 -1 0 1 2 
