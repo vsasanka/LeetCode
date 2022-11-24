@@ -1,48 +1,46 @@
 class Solution {
-    
 private:
-    bool recursion(vector<vector<char>>& board, string word, int i, int j){
+    bool recursion(vector<vector<char>>& board, string word, int index, int row, \
+                  int col, vector<vector<bool>> &visited){
         
-        if (word.size()==0){
-            // cout << " 2 " << endl;
-            return true;
-        }
+        if (index==word.size()) return true;
         
-        if (i<0 || i>=board.size() || j<0 || j>=board[0].size() || word[0]!=board[i][j]){
-            // cout << " 1 "<<" "<< i << " " << j << endl;
+        int m = board.size();
+        int n = board[0].size();
+        
+        if (row < 0 || row >= m || col < 0 || col >= n || visited[row][col]){
             return false;
         }
         
-        // cout << " 3 "<< endl;
+        bool ans = false;
         
-        char temp = board[i][j];
-        board[i][j] = '#';
-        bool res=false;
-        res = recursion(board,word.substr(1,word.size()-1), i+1,j);
-        // cout << res << endl;
-        res = res || recursion(board,word.substr(1,word.size()-1), i,j+1);
-        // cout << res << endl;
-        res = res || recursion(board,word.substr(1,word.size()-1), i-1,j);
-        // cout << res << endl;
-        res = res || recursion(board,word.substr(1,word.size()-1), i,j-1);
-        // cout << res << endl;
-        board[i][j] = temp;
-        return res;
+        visited[row][col] = true;
+        
+        if (word[index] == board[row][col]){
+            ans = ans || recursion(board, word, index+1, row+1, col, visited);
+            ans = ans || recursion(board, word, index+1, row-1, col, visited);
+            ans = ans || recursion(board, word, index+1, row, col+1, visited);
+            ans = ans || recursion(board, word, index+1, row, col-1, visited);
+        }
+        
+        visited[row][col] = false;
+        return ans;
     }
     
 public:
     bool exist(vector<vector<char>>& board, string word) {
         
-        bool ans=false;
-        for (int i=0;i<board.size();i++){
-            for (int j=0;j<board[0].size();j++){
-                ans = recursion(board,word, i,j);
-                if (ans){
-                    return true;
-                }
+        int m = board.size();
+        int n = board[0].size();
+        
+        vector<vector<bool>> visited(m, vector<bool> (n, false));
+        
+        for (int i=0; i<board.size(); i++){
+            for (int j=0; j<board[0].size(); j++){
+                if (recursion(board, word, 0, i, j, visited)) return true;
             }
         }
         
-        return ans;
+        return false;
     }
 };
