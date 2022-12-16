@@ -1,47 +1,34 @@
 class Solution {
 public:
     vector<vector<int>> fourSum(vector<int>& nums, int target) {
-        
         sort(nums.begin(), nums.end());
-        set<vector<int>> ans;
-        vector<vector<int>> answer;
+        set<vector<int>> st;
         
-        if (nums.size()<4){
-            return answer;
-        }
-        
-        for (int i = 0; i < nums.size() - 3; i++){
-            for (int j =i+1; j< nums.size() - 2; j++){
-                int m,n;
-                m = j + 1;
-                n = nums.size() - 1;
-                int sum1 = (nums[i] + nums[j]);
+        for (int i=0; i<nums.size(); i++){
+            for (int j=i+1; j<nums.size(); j++){
+                int k = j+1;
+                int l = nums.size() - 1;
                 
-                while ( m < n){
-                    if (nums[m] + nums[n] + sum1 == target){
-                        vector<int> temp;
-                        temp.push_back(nums[i]);
-                        temp.push_back(nums[j]);
-                        temp.push_back(nums[m]);
-                        temp.push_back(nums[n]);
-                        ans.insert(temp);
-                        m++;
-                        n--;
+                
+                while (k < l){
+                    long long sum = (long long)nums[i] + nums[j] + nums[k] + nums[l];
+                    if (sum == target){
+                        st.insert({nums[i],nums[j],nums[k],nums[l]});
+                        k++;
+                        l--;
                     }
-                    else if(nums[m] + nums[n] + sum1 < target){
-                        m++;
+                    else if (sum < target){
+                        k++;
                     }
                     else{
-                        n--;
+                        l--;
                     }
                 }
             }
         }
         
-        for (auto s : ans){
-            answer.push_back(s);
-        }
+        vector<vector<int>> ans(st.begin(), st.end());
         
-        return answer;
+        return ans;
     }
 };
