@@ -1,54 +1,26 @@
 class Solution {
-    
-private:
-    /*int recursion(left_lim, right_lim){
-        if (sumarray[right_lim] - sumarray[left_lim] + nums[left_lim] == target){
-            return min(minima, minima)
-        }
-    }*/
-    
 public:
     int minSubArrayLen(int target, vector<int>& nums) {
+        int n = nums.size();
+        vector<int> prefix(n+1, 0);
         
-        vector<int> sumarray;
-        int sum = 0;
-        
-        for (int i=0; i<nums.size(); i++){
-            sum += nums[i];
-            sumarray.push_back(sum);
+        for (int i=1; i<=n; i++){
+            prefix[i] = prefix[i-1] + nums[i-1];
         }
         
-        int forward = 0, back = 0, localsum = 0;
-        int minlen = INT_MAX;
+        int to_find;
+        int ans = INT_MAX;
         
-        while (forward < sumarray.size() && back < sumarray.size()) {
-            localsum = sumarray[forward] - sumarray[back] + nums[back];
-            if (localsum < target){
-                forward++;
-            }
-            else{
-                minlen = min(minlen, forward - back + 1);
-                back++;
+        for (int i=1; i<=n; i++){
+            to_find = target + prefix[i-1];
+            
+            auto val = lower_bound(prefix.begin(), prefix.end(), to_find);
+            
+            if (val != prefix.end()){
+                ans = min(ans, static_cast<int>(val - (prefix.begin() + i - 1)));
             }
         }
         
-        if (minlen == INT_MAX){
-            return 0;
-        }
-        
-        return minlen;
+        return ans == INT_MAX ? 0 : ans;
     }
 };
-
-/*
-
-2 5 6 8 12 15
-
-2
-5
-6
-8
-6
-10
-
-*/
