@@ -1,86 +1,57 @@
 class Solution {
 public:
+    int numChars = 128;
+    bool freqTableMatches(vector<int> &windowFreq, vector<int> &tFreq, int &tLetters){
+        int uniqueMatches = 0;
+
+        for (int i=0; i<numChars; i++){
+            uniqueMatches += (tFreq[i] > 0 && tFreq[i] <= windowFreq[i]);
+        }
+
+        return tLetters == uniqueMatches;
+    }
+
     string minWindow(string s, string t) {
         
-        if (s.size()<t.size() || s.size()==0 || t.size()==0){
-            return "";
+        int j = 0;
+        vector<int> tFreq(numChars, 0);
+        vector<int> windowFreq(numChars, 0);
+        int tLetters = 0;
+        string ans = s;
+        int ansFlag = 0;
+        int ansLeft=0, ansRight=s.size() - 1, ansSize = s.size();
+
+        if (t.size() > s.size()) return "";
+
+        for (int i=0; i<t.size(); i++){
+            tFreq[t[i]]++;
         }
-        
-        map<char,int> mapS;
-        map<char,int> mapT;
-        map<char,int>::iterator itr;
-        map<char,int>::iterator itr2;
-        
-        for (int i=0;i<t.size();i++){
-            if (mapT.find(t[i])!=mapT.end()){
-                itr = mapT.find(t[i]);
-                itr->second++;
-            }
-            else{
-                mapT.insert(pair<int,int>(t[i],1));
-            }
+
+        for (int i=0; i<tFreq.size(); i++){
+            if (tFreq[i] > 0) tLetters++;
         }
-        
-        cout << mapT.size() << endl;
-        /*
-        for (int i=0;i<s.size();i++){
-            if (mapS.find(s[i])!=mapS.end()){
-                itr = mapS.find(s[i]);
-                itr->second++;
-            }
-            else{
-                mapS.insert(pair<int,int>(s[i],1));
-            }
-        }*/
-        
-        int left, right;
-        left = right = 0;
-        
-        int req = mapT.size();
-        int formed = 0;
-        string ans = "";
-        
-        while(right<s.size()){
-            itr = mapS.find(s[right]);
+
+        for (int i=0; i<s.size(); i++){
             
-            if (itr!=mapS.end()){
-                itr->second++;
-                // cout << itr->first << " " << itr->second << endl;
+            while (j < s.size() && !freqTableMatches(windowFreq, tFreq, tLetters)){
+                windowFreq[s[j]]++;
+                j++;
             }
-            else{
-                mapS.insert(pair<char,int>(s[right],1));
+
+            if (freqTableMatches(windowFreq, tFreq, tLetters)){
+                if (j - i < ansSize) {
+                    ansSize = j - i;
+                    ansLeft = i;
+                    ansRight = j;
+                }
+                ansFlag = 1;
             }
-            
-            itr2 = mapT.find(s[right]);
-            
-            itr = mapS.find(s[right]);
-            // cout << itr->first << " " << itr2->first << " " << itr->second << " " << itr2->second << endl;
-            if (itr2!=mapT.end() && itr2->second==itr->second){
-                formed++;
-                // cout << formed << endl;
-            }
-            
-            // cout << formed << " " << req << " " << right << endl;
-            
-            while(left<=right && formed==req){
-                string temp = s.substr(left, right-left+1);
-                // cout << temp << endl;
-                ans = ans.size()==0 || temp.size()< ans.size() ? temp : ans;
-                
-                itr = mapS.find(s[left]);
-                itr->second--;
-                
-                itr2 = mapT.find(s[left]);
-                
-                if (itr2!=mapT.end() && itr2->second > itr->second)
-                    formed--;
-                
-                left++;
-            }
-            
-            right++;
+
+            windowFreq[s[i]]--;
         }
-        
-        return ans;
+
+        if (!ansFlag) return "";
+
+        return s.substr(ansLeft, ansSize);
     }
 };
