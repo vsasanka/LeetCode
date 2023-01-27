@@ -10,43 +10,27 @@
  * };
  */
 class Solution {
+public:
     int preorderIndex;
-    
-public: 
-    TreeNode* recursion(vector<int>& preorder, int left, int right,map<int,int>& inorderMap){
-        
-        if (left>right){
-            return NULL;
-        }
-        
-        // cout << "Pre order index : "<< preorderIndex << endl;
-        
-        map<int,int>::iterator itr;
-        
-        int rootVal = preorder[preorderIndex++];
-        TreeNode* root = new TreeNode();
-        root->val = rootVal;
-        
-        itr = inorderMap.find(rootVal);
-        root->left = recursion(preorder, left, (itr->second)-1, inorderMap );
-        root->right = recursion(preorder, (itr->second)+1, right, inorderMap);
+    unordered_map<int,int> inorderMap;
+    TreeNode* recursion(vector<int>& preorder, int left, int right){
+        if (left > right) return NULL;
+
+        TreeNode* root = new TreeNode(preorder[preorderIndex++]);
+
+        root->left = recursion(preorder, left, inorderMap[root->val]-1);
+        root->right = recursion(preorder, inorderMap[root->val]+1, right);
         return root;
     }
-    
-public:
+
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
         
-        preorderIndex=0;
-        map<int,int>inorderMap;
-        
-        // cout << "begin "<< endl;
-        
-        for (int i=0;i<inorder.size();i++){
-            inorderMap.insert(pair<int,int>(inorder[i],i));
+        for (int i=0; i<inorder.size();i++){
+            inorderMap[inorder[i]] = i;
         }
-        
-        // cout << "first recursin in 3...2...1....GO" << endl;
-        
-        return recursion(preorder, 0, preorder.size()-1, inorderMap);
+
+        preorderIndex = 0;
+
+        return recursion(preorder, 0, preorder.size()-1);
     }
 };
