@@ -10,40 +10,30 @@
  * };
  */
 class Solution {
-    
-private:
-    void recursion(TreeNode* node, int level, vector<vector<int>> &vec){
-        if (vec.size()<level){
-            vector<int> temp;
-            temp.push_back(node->val);
-            vec.push_back(temp);
-        }
-        else{
-            vec[level-1].push_back(node->val);
-        }
-        
-        level++;
-        
-        if (node->left!=NULL){
-            recursion(node->left, level, vec);
-        }
-        
-        if (node->right!=NULL){
-            recursion(node->right, level, vec);
-        }
-    }
-    
 public:
     vector<vector<int>> levelOrder(TreeNode* root) {
-        int level = 1;
+        queue<TreeNode*> q;
         vector<vector<int>> ans;
-        
-        if (root==NULL){
-            return ans;
+
+        if (root == NULL) return ans;
+
+        q.push(root);
+
+        while (!q.empty()){
+            int n = q.size();
+            vector<int> temp;
+
+            for (int i=0; i<n; i++){
+                TreeNode* node = q.front();
+                temp.push_back(node->val);
+                if (node->left != NULL) q.push(node->left);
+                if (node->right != NULL) q.push(node->right);
+                q.pop();
+            }
+
+            ans.push_back(temp);
         }
-        
-        recursion(root, level, ans);
-        
+
         return ans;
     }
 };
