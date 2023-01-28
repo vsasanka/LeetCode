@@ -24,40 +24,27 @@ class Solution {
 private:
     Node* traverseDFS(Node* node, unordered_map<Node*, Node*> &mp){
         // cout << node->val << endl;
+
+        if (mp.find(node) != mp.end()) return mp[node];
         
-        Node* clone = new Node(node->val);
-        vector<Node*> neighbor;
-        
-        mp[node] = clone;
-        
-        for (auto neig: node->neighbors){
-            if (mp.find(neig) != mp.end()){
-                neighbor.push_back(mp[neig]);
-            }
-            else{
-                neighbor.push_back(traverseDFS(neig, mp));
-            }
+        Node* newNode = new Node(node->val);
+        mp[node] = newNode;
+
+        for (Node* n : node->neighbors){
+            newNode->neighbors.push_back(traverseDFS(n, mp));
         }
-        
-        clone->neighbors = neighbor;
-        
-        return clone;
+
+        return newNode;
     }
     
 public:
     Node* cloneGraph(Node* node) {
         
-        if (node == NULL){
-            return NULL;
-        }
-        
-        if (node->neighbors.size() == 0){
-            Node* clone = new Node(node->val);
-            return clone;
-        }
-        
+        if (node == NULL) return NULL;
+
         unordered_map<Node*, Node*> mp;
-        
+
         return traverseDFS(node, mp);
+
     }
 };
