@@ -1,56 +1,33 @@
 class Solution {
-    
-private:
-    void islands(vector<vector<char>>& grid, vector<vector<bool>>& nums, int i, int j){
-        
-        // cout << "Inside recursion : " << i << " " << j << " " << endl;
-        if (grid[i][j]=='1'){
-            nums[i][j] = true;
-            
-            if (j+1<grid[0].size() && grid[i][j+1]=='1' && nums[i][j+1]==false){
-                islands(grid,nums, i, j+1);
-            }
-            
-            if (i+1<grid.size() && grid[i+1][j]=='1' && nums[i+1][j]==false){
-                islands(grid,nums, i+1, j);
-            }
-            
-            if (i-1>=0 && grid[i-1][j]=='1' && nums[i-1][j]==false){
-                islands(grid,nums, i-1, j);
-            }
-            
-            if (j-1>=0 && grid[i][j-1]=='1' && nums[i][j-1]==false){
-                islands(grid,nums, i, j-1);
-            }
-        }
-    }
-    
 public:
-    int numIslands(vector<vector<char>>& grid) {
-        vector<vector<bool>> nums;
-        
-        for (int i=0;i<grid.size();i++){
-            vector<bool> bools;
-            for (int j=0;j<grid[0].size();j++){
-                bools.push_back(false);
-            }
-            nums.push_back(bools);
+    void recursion(vector<vector<char>>& grid, int row, int col){
+        int m = grid.size(), n = grid[0].size();
+
+        if (row < 0 || row >= m || col < 0 || col >= n || grid[row][col] == '0'){
+            return ;
         }
-        
-        int count=0;
-        // cout << "count begins ..." << endl;
-        
-        for (int i=0;i<grid.size();i++){
-            for (int j=0;j<grid[0].size();j++){
-                if (grid[i][j]=='1' && nums[i][j]==false){
-                    cout << i << " " << j << " " << count << endl;
-                    islands(grid,nums,i,j);
-                    count++;
-                    // cout << count << endl;
+
+        grid[row][col] = '0';
+
+        recursion(grid, row+1, col);
+        recursion(grid, row-1, col);
+        recursion(grid, row, col+1);
+        recursion(grid, row, col-1);
+    }
+
+    int numIslands(vector<vector<char>>& grid) {
+        int numIslands = 0;
+        int m = grid.size(), n = grid[0].size();
+
+        for (int i=0; i<m; i++){
+            for (int j=0; j<n; j++){
+                if (grid[i][j] == '1'){
+                    recursion(grid, i, j);
+                    numIslands++;
                 }
             }
         }
         
-        return count;
+        return numIslands;
     }
 };
