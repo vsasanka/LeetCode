@@ -2,14 +2,13 @@ class Solution {
 public:
     int findMin(vector<int>& nums) {
         int left = 0;
-        int right = nums.size()-1;
+        int right = nums.size() - 1;
         int mid;
         
-        while(left<right){
+        while(nums[left] > nums[right]){
             mid = left + (right - left)/2;
-            // cout << nums[mid] << " ";
             
-            if (nums[mid] < nums[left] || nums[mid] < nums[right]){
+            if (nums[left] > nums[mid]){
                 right = mid;
             }
             else{
