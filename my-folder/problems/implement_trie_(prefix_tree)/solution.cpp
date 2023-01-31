@@ -1,48 +1,51 @@
 class Trie {
+private:
+    bool isWord = false;
+    Trie* next[26] = {};
+
 public:
     Trie() {
-        
     }
     
     void insert(string word) {
         Trie* node = this;
-        
-        for (char ch: word){
-            ch -= 'a';
-            if (!node->next[ch]) node->next[ch] = new Trie();
-            node = node->next[ch];
+
+        for (char c : word){
+            c -= 'a';
+
+            if (node->next[c] == NULL) node->next[c] = new Trie();
+            node = node->next[c];
         }
-        
         node->isWord = true;
     }
     
     bool search(string word) {
         Trie* node = this;
-        
-        for (char ch: word){
-            ch -= 'a';
-            if (!node->next[ch]) {return false;}
-            node = node->next[ch];
+
+        for (char c : word){
+            c -= 'a';
+
+            if (node->next[c] == NULL) return false;
+
+            node = node->next[c];
         }
-        
+
         return node->isWord;
     }
     
     bool startsWith(string prefix) {
         Trie* node = this;
-        
-        for (char ch: prefix){
-            ch -= 'a';
-            if (!node->next[ch]) {return false;}
-            node = node->next[ch];
+
+        for (char c : prefix){
+            c -= 'a';
+
+            if (node->next[c] == NULL) return false;
+
+            node = node->next[c];
         }
-        
+
         return true;
     }
-    
-private:
-    bool isWord = false;
-    Trie* next[26] = {};
 };
 
 /**
