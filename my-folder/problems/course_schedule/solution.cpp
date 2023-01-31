@@ -1,47 +1,38 @@
 class Solution {
-    
-private:
-    bool isCyclic(vector<vector<int>> &graph, vector<bool> &done, vector<bool> &todo, int node){
-        // if this node was already seen within this dfs, then return false
-        if (todo[node]){
-            return true;
-        }
-        // mark the current node as visited
-        if (done[node]){
-            return false;
-        }
-        // 
-        todo[node] = done[node] = true;
-        
-        for (auto n : graph[node]){
-            if (isCyclic(graph, done,todo, n)) return true;
-        }
-        todo[node] = false;
-        
-        return false;
-    }
-    
-    void createGraph(vector<vector<int>> &graph, vector<vector<int>> &prerequisites){
-        // iterate across prerequisites and create graph
-        
-        for (int i=0;i<prerequisites.size();i++){
-            graph[prerequisites[i][1]].push_back(prerequisites[i][0]);
-        }
-    }
-    
 public:
-    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
-        vector<vector<int>> graph(numCourses);
-        
-        createGraph(graph, prerequisites);
-        
-        vector<bool> done(numCourses, false); // once and for all
-        vector<bool> todo(numCourses, false); // used for each dfs
-        
-        for (int i=0;i<numCourses;i++){
-            if (isCyclic(graph,done,todo,i)) return false;
+    bool isCycle(vector<vector<bool>> &graph, int node, vector<bool> &todo, vector<bool> &visited){
+        if (todo[node]) return true;
+
+        if (visited[node]) return false;
+
+        bool cycle = false;
+        visited[node] = true;
+        todo[node] = true;
+
+        for (int i=0; i<graph.size(); i++){
+            if (graph[node][i]) cycle = cycle || isCycle(graph, i, todo, visited); 
         }
-        
+
+        todo[node] = false;
+
+        return cycle;
+    }
+
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<vector<bool>> graph(numCourses, vector(numCourses, false));
+
+        for (auto c: prerequisites){
+            graph[c[1]][c[0]] = true;
+            // graph[c[1]][c[0]] = true;
+        }
+
+        vector<bool> visited(numCourses, false);
+        vector<bool> todo(numCourses, false);
+
+        for (int i=0; i<numCourses; i++){
+            if (!visited[i] && isCycle(graph, i, todo, visited)) return false; 
+        }
+
         return true;
     }
 };
