@@ -10,40 +10,36 @@
 class Solution {
     
 private:
-    int recursion(TreeNode* root, TreeNode* p, TreeNode* q, TreeNode* &lca){
+    TreeNode* lcaNode;
+    pair<bool,bool> pqFlag = {false, false};
+    bool resultFlag = false;
+
+    bool recursion(TreeNode* root, TreeNode* p, TreeNode* q){
         
-        if (!root) return 0;
-        
-        int left = 0, right = 0, gen = 0;
-        
-        if (p == root || q == root){
-            gen = 1;
+        if (root == NULL) return false;
+
+        bool a = recursion(root->left, p, q);
+        bool b = recursion(root->right, p, q);
+
+        bool c = false;
+
+        if (root->val == p->val || root->val == q->val){
+            c = true;
         }
-        
-        left = recursion(root->left, p,q,lca);
-        if (left == 10) return 10;
-        right = recursion(root->right, p,q,lca);
-        if (right == 10) return 10;
-        
-        if (left + right + gen == 2){
-            lca = root;
-            return 10;
+
+        if (a && b){
+            lcaNode = root;
         }
-//         else if (right == 1 && gen == 1){
-            
-//         }
-//         else if (left == 1 && right == 1)
-        
-        return left + right + gen;
+        else if ((a || b) && c){
+            lcaNode = root;
+        }
+        return a || b || c;
     }
     
     
 public:
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        TreeNode* lca = root;
-        
-        int i = recursion(root, p, q, lca);
-        
-        return lca;
+        recursion(root, p,q);
+        return lcaNode;
     }
 };
