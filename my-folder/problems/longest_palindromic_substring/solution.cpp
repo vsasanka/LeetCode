@@ -1,35 +1,39 @@
 class Solution {
-    
-private: 
-    bool isPalindrome(string& s, int left, int right){
-        while(left<right){
-            if (s[left]!=s[right]){
-                return false;
-            }
-            else{
-                left++;
-                right--;
-            }
-        }
-        
-        return true;
-}
-    
 public:
+    int left, right;
+    int palindromeSize(int i, int j, string s){
+        while (i>=0 && j<s.size() && s[i] == s[j]){
+            i--;
+            j++;
+        }
+
+        left = i;
+        right = j;
+
+        return j - i - 1;
+    }
+
     string longestPalindrome(string s) {
-        int i,j;
-        string maxstring=s.substr(0,1);
-        
-        for (i=0;i<s.size()-maxstring.size();i++){
-            for (j=s.size()-1;j>i;j--){
-                if (s[i]==s[j] && isPalindrome(s, i,j) && maxstring.size() < (j-i+1)){
-                    // cout << s[i] << " " << s[j] << " ";
-                    maxstring=s.substr(i,j-i+1);
-                    break;
-                }
+        int maxPalLen = 0;
+        int palLen1, palLen2;
+        string ans = "";
+
+        for (int i=0; i<s.size(); i++){
+            palLen1 = palindromeSize(i,i,s);
+
+            if (palLen1 > maxPalLen){
+                ans = s.substr(left+1, palLen1);
+                maxPalLen = palLen1;
+            }
+
+            palLen2 = palindromeSize(i,i+1,s);
+
+            if (palLen2 > maxPalLen){
+                ans = s.substr(left+1, palLen2);
+                maxPalLen = palLen2;
             }
         }
-        
-        return maxstring;
+
+        return ans;
     }
 };
