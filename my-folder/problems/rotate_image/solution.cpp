@@ -1,33 +1,23 @@
 class Solution {
 public:
     void rotate(vector<vector<int>>& matrix) {
-        
-        stack<int> store;
-        int row_size = matrix.size();
-        
-        for (int i=0;i<row_size/2;i++){
-            // int row_size = matrix[0].size() - 2*i;
-            // int row_limit = matrix.size()-i;
-            
-            for (int j=i;j<row_size-i;j++){
-                store.push(matrix[i][j]);
+        // mirror along neg diagonal
+
+        int n = matrix.size();
+
+        for (int i=0; i<n;i++){
+            for (int j=i+1; j<n; j++){
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = temp;
             }
-            
-            for (int j=i;j<row_size-i;j++){
-                matrix[i][row_size-1-j] = matrix[j][i];
-            }
-            
-            for (int j=i;j<row_size-i;j++){
-                matrix[j][i] = matrix[row_size-1-i][j];
-            }
-            
-            for (int j=i;j<row_size-i;j++){
-                matrix[row_size-1-i][j] = matrix[row_size-1-j][row_size-1-i];
-            }
-            
-            for (int j=i;j<row_size-i;j++){
-                matrix[row_size-1-j][row_size-1-i] = store.top();
-                store.pop();
+        }
+
+        for (int i=0; i<n; i++){
+            for (int j=0; j<n/2; j++){
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[i][n-1-j];
+                matrix[i][n-1-j] = temp;
             }
         }
     }
