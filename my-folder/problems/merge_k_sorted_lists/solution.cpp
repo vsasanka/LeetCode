@@ -9,53 +9,42 @@
  * };
  */
 class Solution {
-private:
-    ListNode* returnMin(vector<ListNode*>& lists){
-        
-        ListNode* min = NULL;
-        int minIndex = -1;
-        
-        for (int i=0; i<lists.size(); i++){
-            
-            if (min==NULL){
-                min = lists[i];
-                minIndex = i;
-                continue;
-            }
-            
-            if (lists[i] != NULL){
-                if (lists[i]->val < min->val){
-                    min = lists[i];
-                    minIndex = i;
-                }
-            }
-        }
-        
-        if (min != NULL) lists[minIndex] = lists[minIndex]->next;
-        return min;
-    }
-    
 public:
     ListNode* mergeKLists(vector<ListNode*>& lists) {
         
-        ListNode* ans = new ListNode(0);
-        ListNode* curr = ans;
-        
+        ListNode* head = NULL;
+        ListNode* ans = NULL;
+
         while (true){
-            ListNode* min = returnMin(lists);
-            if (min == NULL) break;
-            curr->next = new ListNode(min->val);
-            curr = curr->next;
+            int smallestVal = INT_MAX;
+            int smallListIndex = -1;
+
+            for (int i=0; i<lists.size(); i++){
+                // ListNode* listNow = lists[i];
+                if (lists[i] != NULL && lists[i]->val < smallestVal){
+                    smallestVal = lists[i]->val;
+                    smallListIndex = i;
+                }
+            }
+
+            if (smallListIndex == -1){
+                break;
+            }
+
+            ListNode* node = new ListNode();
+            node->val = smallestVal;
+            lists[smallListIndex] = lists[smallListIndex]->next;
+
+            if (!head){
+                head = node;
+                ans = node;
+            }
+            else{
+                head->next = node;
+                head = node;
+            }
         }
-        
-        return ans->next;
+
+        return ans;
     }
 };
-
-/*
-
-1 2 3
-1 4 5
-4 5 6
-
-*/
