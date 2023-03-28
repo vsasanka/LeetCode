@@ -1,33 +1,26 @@
 class Solution {
-    
-private:
-    void recursion(vector<int> &currComb, vector<int> &candidates, int currSum, int currIndex, vector<vector<int>> &ans, int target){
-        if (currSum==target){
-            ans.push_back(currComb);
-            return ;
-        }
-        if (currSum>target){
-            return ;
-        }
+public:
+    void recursion(vector<vector<int>> &ans, vector<int>& candidates, int index, int sum, int &target, vector<int>& combination){
         
-        for (int i=currIndex; i<candidates.size(); i++){
-            currSum += candidates[i];
-            currComb.push_back(candidates[i]);
-            recursion(currComb, candidates, currSum, i, ans, target);
-            currComb.pop_back();
-            currSum -= candidates[i];
+        if (sum > target) return ;
+
+        if (sum == target) ans.push_back(combination);
+
+        int n = candidates.size();
+
+        for (int i=index; i<n; i++){
+            combination.push_back(candidates[i]);
+            recursion(ans, candidates, i, sum + candidates[i], target, combination);
+            combination.pop_back();
         }
     }
-    
-public:
+
     vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
         vector<vector<int>> ans;
-        vector<int> currComb;
-        
-        int sum = 0;
-        int currIndex = 0;
-        
-        recursion(currComb, candidates, sum, currIndex, ans, target);
+        vector<int> comb;
+
+        recursion(ans, candidates, 0, 0, target, comb);
+
         return ans;
     }
 };
