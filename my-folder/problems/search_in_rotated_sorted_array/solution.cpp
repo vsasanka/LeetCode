@@ -1,40 +1,24 @@
 class Solution {
 public:
-    int search(vector<int>& nums, int target) {
-        int low = 0, high = nums.size() - 1;
-        int mid, rmid;
-        int n = nums.size();
+    int recursion(vector<int>& nums, int i, int j, int target){
 
-        while (low < high){
-            mid = (low + high)/2;
+        while (i<=j){
+            int mid = i + (j-i)/2;
 
-            if (nums[mid] > nums[high]){
-                low = mid + 1;
+            if (nums[mid] == target){
+                return mid;
             }
             else{
-                high = mid;
-            }
-        }
-
-        int offset = low;
-
-        low = 0, high = nums.size() - 1;
-
-        while (low <= high){
-            mid = (low + high)/2;
-            rmid = (mid + offset)%n;
-
-            if (nums[rmid] == target){
-                return rmid;
-            }
-            else if (nums[rmid] < target){
-                low = mid + 1;
-            }
-            else{
-                high = mid - 1;
+                return max(recursion(nums, i, mid-1, target), recursion(nums, mid+1, j, target));
             }
         }
 
         return -1;
+    }
+
+    int search(vector<int>& nums, int target) {
+        int left = 0, right = nums.size() - 1;
+
+        return recursion(nums, left, right, target);
     }
 };
