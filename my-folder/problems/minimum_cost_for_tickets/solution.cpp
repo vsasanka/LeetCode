@@ -1,49 +1,32 @@
 class Solution {
 public:
     int mincostTickets(vector<int>& days, vector<int>& costs) {
+        unordered_set<int> s(days.begin(), days.end());
         vector<int> dp(366, 0);
-        dp[days[0]] = costs[0];
-        
-        for (int i=1; i<days.size(); i++){
-            dp[days[i]] = costs[0] + dp[days[i-1]];
-        }
-        
-        dp[0] = 0;
-        int lastDay = 1;
-        int today = 1;
-        
-        for (int i=0; i<days.size(); i++){
-            today = days[i];
-            
-            for (int j=lastDay+1; j<today; j++){
-                dp[j] = dp[j-1];
-            }
-            
-            if (today - 1 >= 0){
-                dp[today] = dp[today - 1] + min(min(costs[0],costs[1]), costs[2]);
-            }
-            
-            if (today - 7 >= 0){
-                dp[today] = min(dp[today - 7] + min(costs[1], costs[2]), dp[today]);
+
+        for (int i=1; i<=365; i++){
+            if (s.find(i) == s.end()){
+                dp[i] = dp[i-1];
             }
             else{
-                dp[today] = min(min(costs[1], costs[2]), dp[today]);
+                dp[i] = dp[i-1] + min(costs[0],min(costs[1],costs[2]));
+
+                if (i-7 < 0){
+                    dp[i] = min(dp[i], min(costs[1],costs[2]));
+                }
+                else{
+                    dp[i] = min(dp[i], dp[i-7] + min(costs[1],costs[2]));
+                }
+
+                if (i-30 < 0){
+                    dp[i] = min(dp[i], costs[2]);
+                }
+                else{
+                    dp[i] = min(dp[i], dp[i-30] + costs[2]);
+                }
             }
-            
-            if (today - 30 >= 0){
-                dp[today] = min(dp[today - 30] + costs[2], dp[today]);
-            }
-            else{
-                dp[today] = min(costs[2], dp[today]);
-            }
-            
-            lastDay = today;
         }
-        
-        // for (int i=0; i<=days[days.size()-1]; i++){
-        //     cout << dp[i] << " ";
-        // }
-        
-        return dp[days[days.size()-1]];
+
+        return dp[365];
     }
 };
