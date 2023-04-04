@@ -1,18 +1,24 @@
 class Solution {
 public:
     int partitionString(string s) {
-        unordered_map<char,int> fre;
-        int part = 0;
-        
-        for (int i=0; i<s.size(); i++){
-            fre[s[i]]++;
-            if (fre[s[i]] > 1){
-                part++;
-                fre.clear();
-                fre[s[i]]++;
+        int minPars = 1;
+        int i=0, j=0;
+        unordered_set<int> unset;
+
+        while (j < s.size()){
+            while (j < s.size() && unset.find(s[j]) == unset.end()){
+                unset.insert(s[j]);
+                j++;
             }
+
+            if (j == s.size()) return minPars;
+
+            unset.clear();
+            unset.insert(s[j]);
+            minPars++;
+            j++;
         }
-        
-        return part+1;
+
+        return minPars;
     }
 };
