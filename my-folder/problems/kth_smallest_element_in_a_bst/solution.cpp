@@ -10,40 +10,23 @@
  * };
  */
 class Solution {
-    
-    bool found;
-    int kthsmall;
-    int assess;
-    
-private:
-    bool findK(TreeNode* root,int k){
-        if (root==NULL){
-            return false;
-        }
-        
-        bool search = findK(root->left,k);
-        if (search){
-            return true;
-        }
-        
-        assess++;
-        if (assess==k){
-            kthsmall = root->val;
-            found = true;
-            return true;
-        }
-        
-        return findK(root->right,k);
-    }
-    
 public:
+    void recursion(TreeNode* root, int &k, int &ans, int &rank){
+        if (root == NULL) return ;
+
+        recursion(root->left, k, ans, rank);
+        rank++;
+        if (rank == k) {
+            ans = root->val;
+            return ;
+        }
+        recursion(root->right, k, ans, rank);
+    }
+
     int kthSmallest(TreeNode* root, int k) {
-        found = false;
-        kthsmall = -1;
-        assess=0;
+        int ans, rank = 0;
+        recursion(root, k, ans, rank);
         
-        findK(root,k);
-        
-        return kthsmall;
+        return ans;
     }
 };
