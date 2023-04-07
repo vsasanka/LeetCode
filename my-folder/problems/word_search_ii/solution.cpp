@@ -34,12 +34,12 @@ public:
         node->isWord = true;
     }
     
-};
+}; 
 
 class Solution {
     
 private:
-    void findW(vector<vector<char>>& board, TrieNode* root, set<string>& result, string word, int i, int j){
+    void findW(vector<vector<char>>& board, TrieNode* root, unordered_set<string>& result, string word, int i, int j){
         if (i<0 || i>= board.size() || j < 0 || j>=board[0].size() || board[i][j] == ' ') return ;
         
         char ch = board[i][j];
@@ -67,14 +67,13 @@ public:
     vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
         Trie* t = new Trie();
         
-        
         for (string st: words){
             t->insert(st);
         }
         
         TrieNode* root = t->getRoot();
         
-        set<string> result;
+        unordered_set<string> result;
         
         for (int i=0; i<board.size(); i++){
             for (int j=0; j<board[0].size(); j++){
@@ -82,11 +81,7 @@ public:
             }
         }
         
-        vector<string> ans;
-        
-        for (string st: result){
-            ans.push_back(st);
-        }
+        vector<string> ans(result.begin(), result.end());
         
         return ans;
     }
