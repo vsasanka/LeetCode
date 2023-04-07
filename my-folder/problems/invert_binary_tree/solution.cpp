@@ -10,22 +10,17 @@
  * };
  */
 class Solution {
-    
-private:
-    void recursion(TreeNode* root){
-        if (!root) return;
-        
-        recursion(root->left);
-        recursion(root->right);
-        
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if (root == NULL) return root;
+
         TreeNode* temp = root->left;
         root->left = root->right;
         root->right = temp;
-    }
-    
-public:
-    TreeNode* invertTree(TreeNode* root) {
-        recursion(root);
+
+        invertTree(root->left);
+        invertTree(root->right);
+
         return root;
     }
 };
