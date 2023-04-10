@@ -8,28 +8,18 @@ public:
     }
     
     void addNum(int num) {
-        n++;
-
         if (n%2==0){
-            if (num < pq.top()){
-                int temp = pq.top();
-                pq.pop();
-                pq.push(num);
-                num = temp;
-            }
-            
             pq2.push(num);
+            pq.push(pq2.top());
+            pq2.pop();
         }
         else{
-            if (!pq2.empty() && num > pq2.top()){
-                int temp = pq2.top();
-                pq2.pop();
-                pq2.push(num);
-                num = temp;
-            }
-            // cout << num << endl;
             pq.push(num);
+            pq2.push(pq.top());
+            pq.pop();
         }
+
+        n++;
     }
     
     double findMedian() {
